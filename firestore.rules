@@ -1,0 +1,325 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Core Primitives
+    function isValidId(id) {
+      return id is string && id.size() >= 2 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isEmailVerified() && request.auth.token.email == 'tounekti17@gmail.com';
+    }
+
+    function isValidImageRef(val) {
+      return val is string && val.size() >= 5 && val.size() <= 220000;
+    }
+
+    // Story Catalog Validation
+    function isValidStory(data) {
+      return data.keys().hasAll([
+        'title', 'slug', 'description', 'category', 'coverImage',
+        'gallery', 'price', 'pages', 'format', 'paperType',
+        'bindingType', 'ageRange', 'language', 'active', 'createdAt'
+      ])
+      && data.keys().hasOnly([
+        'title', 'titleFr', 'titleEn', 'slug',
+        'description', 'descriptionFr', 'descriptionEn',
+        'category', 'categoryFr', 'categoryEn',
+        'coverImage', 'gallery', 'price', 'pages', 'format',
+        'paperType', 'bindingType', 'ageRange', 'prepTime',
+        'language', 'featured', 'active', 'createdAt'
+      ])
+      && data.title is string && data.title.size() >= 2 && data.title.size() <= 160
+      && (!('titleFr' in data) || (data.titleFr is string && data.titleFr.size() >= 2 && data.titleFr.size() <= 160))
+      && (!('titleEn' in data) || (data.titleEn is string && data.titleEn.size() >= 2 && data.titleEn.size() <= 160))
+      && data.slug is string && data.slug.size() >= 2 && data.slug.size() <= 120 && data.slug.matches('^[a-z0-9\\-]+$')
+      && data.description is string && data.description.size() >= 10 && data.description.size() <= 2000
+      && (!('descriptionFr' in data) || (data.descriptionFr is string && data.descriptionFr.size() >= 10 && data.descriptionFr.size() <= 2000))
+      && (!('descriptionEn' in data) || (data.descriptionEn is string && data.descriptionEn.size() >= 10 && data.descriptionEn.size() <= 2000))
+      && data.category is string && data.category.size() >= 2 && data.category.size() <= 80
+      && (!('categoryFr' in data) || (data.categoryFr is string && data.categoryFr.size() >= 2 && data.categoryFr.size() <= 80))
+      && (!('categoryEn' in data) || (data.categoryEn is string && data.categoryEn.size() >= 2 && data.categoryEn.size() <= 80))
+      && isValidImageRef(data.coverImage)
+      && data.gallery is list && data.gallery.size() <= 6 && (data.gallery.size() == 0 || isValidImageRef(data.gallery[0]))
+      && data.price is number && data.price > 0 && data.price <= 1000
+      && data.pages is int && data.pages >= 8 && data.pages <= 200
+      && data.format is string && data.format.size() >= 2 && data.format.size() <= 80
+      && data.paperType is string && data.paperType.size() >= 2 && data.paperType.size() <= 120
+      && data.bindingType is string && data.bindingType.size() >= 2 && data.bindingType.size() <= 120
+      && data.ageRange is string && data.ageRange.size() >= 1 && data.ageRange.size() <= 40
+      && (!('prepTime' in data) || (data.prepTime is string && data.prepTime.size() >= 2 && data.prepTime.size() <= 80))
+      && data.language is list && data.language.size() >= 1 && data.language.size() <= 5 && data.language[0] is string
+      && (!('featured' in data) || data.featured is bool)
+      && data.active is bool
+      && data.createdAt is timestamp;
+    }
+
+    // Storefront Interface Settings Validation
+    function isValidStorefrontSettings(data) {
+      return data.keys().hasAll(['heroTitleAr', 'heroSubtitleAr', 'heroImage', 'updatedAt'])
+      && data.keys().hasOnly([
+        'heroHighlightAr', 'heroHighlightFr', 'heroHighlightEn',
+        'heroTitleAr', 'heroTitleFr', 'heroTitleEn',
+        'heroSubtitleAr', 'heroSubtitleFr', 'heroSubtitleEn',
+        'heroCtaPrimaryAr', 'heroCtaPrimaryFr', 'heroCtaPrimaryEn',
+        'heroCtaSecondaryAr', 'heroCtaSecondaryFr', 'heroCtaSecondaryEn',
+        'heroImage',
+        'featuredTitleAr', 'featuredTitleFr', 'featuredTitleEn',
+        'featuredSubtitleAr', 'featuredSubtitleFr', 'featuredSubtitleEn',
+        'domainsTitleAr', 'domainsTitleFr', 'domainsTitleEn',
+        'domainsSubtitleAr', 'domainsSubtitleFr', 'domainsSubtitleEn',
+        'customBookPrice', 'contactPhone', 'contactEmail', 'contactLocation',
+        'instagramUrl', 'facebookUrl',
+        'updatedAt'
+      ])
+      && (!('heroHighlightAr' in data) || (data.heroHighlightAr is string && data.heroHighlightAr.size() <= 160))
+      && (!('heroHighlightFr' in data) || (data.heroHighlightFr is string && data.heroHighlightFr.size() <= 160))
+      && (!('heroHighlightEn' in data) || (data.heroHighlightEn is string && data.heroHighlightEn.size() <= 160))
+      && data.heroTitleAr is string && data.heroTitleAr.size() >= 2 && data.heroTitleAr.size() <= 200
+      && (!('heroTitleFr' in data) || (data.heroTitleFr is string && data.heroTitleFr.size() <= 200))
+      && (!('heroTitleEn' in data) || (data.heroTitleEn is string && data.heroTitleEn.size() <= 200))
+      && data.heroSubtitleAr is string && data.heroSubtitleAr.size() >= 2 && data.heroSubtitleAr.size() <= 600
+      && (!('heroSubtitleFr' in data) || (data.heroSubtitleFr is string && data.heroSubtitleFr.size() <= 600))
+      && (!('heroSubtitleEn' in data) || (data.heroSubtitleEn is string && data.heroSubtitleEn.size() <= 600))
+      && (!('heroCtaPrimaryAr' in data) || (data.heroCtaPrimaryAr is string && data.heroCtaPrimaryAr.size() <= 80))
+      && (!('heroCtaPrimaryFr' in data) || (data.heroCtaPrimaryFr is string && data.heroCtaPrimaryFr.size() <= 80))
+      && (!('heroCtaPrimaryEn' in data) || (data.heroCtaPrimaryEn is string && data.heroCtaPrimaryEn.size() <= 80))
+      && (!('heroCtaSecondaryAr' in data) || (data.heroCtaSecondaryAr is string && data.heroCtaSecondaryAr.size() <= 80))
+      && (!('heroCtaSecondaryFr' in data) || (data.heroCtaSecondaryFr is string && data.heroCtaSecondaryFr.size() <= 80))
+      && (!('heroCtaSecondaryEn' in data) || (data.heroCtaSecondaryEn is string && data.heroCtaSecondaryEn.size() <= 80))
+      && isValidImageRef(data.heroImage)
+      && (!('featuredTitleAr' in data) || (data.featuredTitleAr is string && data.featuredTitleAr.size() <= 160))
+      && (!('featuredTitleFr' in data) || (data.featuredTitleFr is string && data.featuredTitleFr.size() <= 160))
+      && (!('featuredTitleEn' in data) || (data.featuredTitleEn is string && data.featuredTitleEn.size() <= 160))
+      && (!('featuredSubtitleAr' in data) || (data.featuredSubtitleAr is string && data.featuredSubtitleAr.size() <= 400))
+      && (!('featuredSubtitleFr' in data) || (data.featuredSubtitleFr is string && data.featuredSubtitleFr.size() <= 400))
+      && (!('featuredSubtitleEn' in data) || (data.featuredSubtitleEn is string && data.featuredSubtitleEn.size() <= 400))
+      && (!('domainsTitleAr' in data) || (data.domainsTitleAr is string && data.domainsTitleAr.size() <= 180))
+      && (!('domainsTitleFr' in data) || (data.domainsTitleFr is string && data.domainsTitleFr.size() <= 180))
+      && (!('domainsTitleEn' in data) || (data.domainsTitleEn is string && data.domainsTitleEn.size() <= 180))
+      && (!('domainsSubtitleAr' in data) || (data.domainsSubtitleAr is string && data.domainsSubtitleAr.size() <= 400))
+      && (!('domainsSubtitleFr' in data) || (data.domainsSubtitleFr is string && data.domainsSubtitleFr.size() <= 400))
+      && (!('domainsSubtitleEn' in data) || (data.domainsSubtitleEn is string && data.domainsSubtitleEn.size() <= 400))
+      && (!('customBookPrice' in data) || (data.customBookPrice is number && data.customBookPrice > 0 && data.customBookPrice <= 1000))
+      && (!('contactPhone' in data) || (data.contactPhone is string && data.contactPhone.size() <= 40))
+      && (!('contactEmail' in data) || (data.contactEmail is string && data.contactEmail.size() <= 160))
+      && (!('contactLocation' in data) || (data.contactLocation is string && data.contactLocation.size() <= 160))
+      && (!('instagramUrl' in data) || (data.instagramUrl is string && data.instagramUrl.size() <= 240))
+      && (!('facebookUrl' in data) || (data.facebookUrl is string && data.facebookUrl.size() <= 240))
+      && data.updatedAt is timestamp;
+    }
+
+    // Single Admin Security Validation
+    function isValidAdminSecurity(data) {
+      return data.keys().hasAll(['email', 'updatedAt'])
+      && data.keys().hasOnly(['email', 'passwordHash', 'salt', 'password', 'updatedAt'])
+      && data.email == 'tounekti17@gmail.com'
+      && (!('passwordHash' in data) || (data.passwordHash is string && data.passwordHash.size() >= 32 && data.passwordHash.size() <= 256))
+      && (!('salt' in data) || (data.salt is string && data.salt.size() >= 8 && data.salt.size() <= 128))
+      && (!('password' in data) || (data.password is string && data.password.size() >= 4 && data.password.size() <= 128))
+      && (('passwordHash' in data && 'salt' in data) || ('password' in data))
+      && data.updatedAt is timestamp;
+    }
+
+    // Story Domain Validation
+    function isValidStoryDomain(data) {
+      return data.keys().hasAll([
+        'labelAr', 'summaryAr', 'recommendedStoryId', 'coverPreview', 'active', 'updatedAt'
+      ])
+      && data.keys().hasOnly([
+        'labelAr', 'labelFr', 'labelEn',
+        'summaryAr', 'summaryFr', 'summaryEn',
+        'subtopicsAr', 'subtopicsFr', 'subtopicsEn',
+        'recommendedStoryId', 'coverPreview', 'sortOrder', 'active', 'updatedAt'
+      ])
+      && data.labelAr is string && data.labelAr.size() >= 2 && data.labelAr.size() <= 100
+      && (!('labelFr' in data) || (data.labelFr is string && data.labelFr.size() <= 100))
+      && (!('labelEn' in data) || (data.labelEn is string && data.labelEn.size() <= 100))
+      && data.summaryAr is string && data.summaryAr.size() >= 2 && data.summaryAr.size() <= 280
+      && (!('summaryFr' in data) || (data.summaryFr is string && data.summaryFr.size() <= 280))
+      && (!('summaryEn' in data) || (data.summaryEn is string && data.summaryEn.size() <= 280))
+      && (!('subtopicsAr' in data) || (data.subtopicsAr is list && data.subtopicsAr.size() <= 8 && (data.subtopicsAr.size() == 0 || data.subtopicsAr[0] is string)))
+      && (!('subtopicsFr' in data) || (data.subtopicsFr is list && data.subtopicsFr.size() <= 8 && (data.subtopicsFr.size() == 0 || data.subtopicsFr[0] is string)))
+      && (!('subtopicsEn' in data) || (data.subtopicsEn is list && data.subtopicsEn.size() <= 8 && (data.subtopicsEn.size() == 0 || data.subtopicsEn[0] is string)))
+      && isValidId(data.recommendedStoryId)
+      && isValidImageRef(data.coverPreview)
+      && (!('sortOrder' in data) || (data.sortOrder is int && data.sortOrder >= 0 && data.sortOrder <= 500))
+      && data.active is bool
+      && data.updatedAt is timestamp;
+    }
+
+    // Order Validation
+    function isValidOrderCustomer(c) {
+      return c is map
+        && c.keys().hasAll(['fullName', 'phone', 'governorate', 'delegation', 'address', 'notes'])
+        && c.keys().hasOnly(['fullName', 'phone', 'governorate', 'delegation', 'address', 'notes'])
+        && c.fullName is string && c.fullName.size() >= 2 && c.fullName.size() <= 120
+        && c.phone is string && c.phone.matches('^[0-9]{8}$')
+        && c.governorate is string && c.governorate.size() >= 2 && c.governorate.size() <= 80
+        && c.delegation is string && c.delegation.size() >= 2 && c.delegation.size() <= 80
+        && c.address is string && c.address.size() >= 4 && c.address.size() <= 300
+        && c.notes is string && c.notes.size() <= 500;
+    }
+
+    function isValidOrderItem(item) {
+      return item is map
+        && item.keys().hasAll([
+          'storyId', 'storyTitle', 'childName', 'childAge',
+          'language', 'dedication', 'childPhotoBase64', 'unitPrice', 'quantity'
+        ])
+        && item.keys().hasOnly([
+          'storyId', 'storyTitle', 'storyDomain', 'storyIdea', 'childName', 'childAge',
+          'language', 'dedication', 'childPhotoBase64', 'unitPrice', 'quantity'
+        ])
+        && isValidId(item.storyId)
+        && item.storyTitle is string && item.storyTitle.size() >= 1 && item.storyTitle.size() <= 200
+        && (!('storyDomain' in item) || (item.storyDomain is string && item.storyDomain.size() <= 120))
+        && (!('storyIdea' in item) || (item.storyIdea is string && item.storyIdea.size() <= 1200))
+        && item.childName is string && item.childName.size() >= 1 && item.childName.size() <= 60
+        && item.childAge is int && item.childAge >= 0 && item.childAge <= 16
+        && item.language is string && item.language in ['ar', 'fr', 'en']
+        && item.dedication is string && item.dedication.size() <= 300
+        && item.childPhotoBase64 is string
+        && item.childPhotoBase64.size() >= 30
+        && item.childPhotoBase64.size() <= 220000
+        && item.childPhotoBase64.matches('^data:image/jpeg;base64,[A-Za-z0-9+/=]+$')
+        && item.unitPrice is number && item.unitPrice > 0 && item.unitPrice <= 1000
+        && item.quantity is int && item.quantity >= 1 && item.quantity <= 20;
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll([
+        'orderNumber', 'customer', 'items', 'subtotal', 'deliveryFee',
+        'total', 'paymentMethod', 'status', 'confirmedAccurate', 'createdAt'
+      ])
+      && data.keys().hasOnly([
+        'orderNumber', 'customer', 'items', 'subtotal', 'deliveryFee',
+        'total', 'paymentMethod', 'status', 'confirmedAccurate', 'userId', 'createdAt'
+      ])
+      && data.orderNumber is string && data.orderNumber.matches('^MLS-[0-9]{6}-[A-Z0-9]{4}$')
+      && isValidOrderCustomer(data.customer)
+      && data.items is list && data.items.size() >= 1 && data.items.size() <= 10 && isValidOrderItem(data.items[0])
+      && data.subtotal is number && data.subtotal > 0 && data.subtotal <= 50000
+      && data.deliveryFee is number && data.deliveryFee >= 0 && data.deliveryFee <= 100
+      && data.total is number && data.total == data.subtotal + data.deliveryFee
+      && data.paymentMethod == 'COD'
+      && data.status in ['pending', 'printing', 'shipped', 'delivered', 'cancelled']
+      && data.confirmedAccurate == true
+      && (!('userId' in data) || data.userId == null || (isSignedIn() && data.userId == request.auth.uid))
+      && data.createdAt is timestamp;
+    }
+
+    match /stories/{storyId} {
+      allow get: if isValidId(storyId) && (existing().active == true || isAdmin());
+      allow list: if resource.data.active == true || isAdmin();
+      allow create: if isValidId(storyId)
+        && isAdmin()
+        && isValidStory(incoming())
+        && incoming().createdAt == request.time;
+      allow update: if isValidId(storyId)
+        && isAdmin()
+        && isValidStory(incoming())
+        && incoming().createdAt == existing().createdAt;
+      allow delete: if isValidId(storyId) && isAdmin();
+    }
+
+    match /settings/{settingId} {
+      allow get: if isValidId(settingId) && (settingId == 'storefront' || isAdmin());
+      allow list: if false;
+      allow create, update: if isValidId(settingId)
+        && settingId == 'storefront'
+        && isAdmin()
+        && isValidStorefrontSettings(incoming())
+        && incoming().updatedAt == request.time;
+      allow delete: if false;
+    }
+
+    match /storyDomains/{domainId} {
+      allow get: if isValidId(domainId) && (existing().active == true || isAdmin());
+      allow list: if resource.data.active == true || isAdmin();
+      allow create, update: if isValidId(domainId)
+        && isAdmin()
+        && isValidStoryDomain(incoming())
+        && incoming().updatedAt == request.time;
+      allow delete: if isValidId(domainId) && isAdmin();
+    }
+
+    match /orders/{orderId} {
+      // Never allow public reading of orders (contains PII and child photos)
+      allow get: if isValidId(orderId) && isSignedIn() && (
+        (existing().userId != null && existing().userId == request.auth.uid) || isAdmin()
+      );
+      allow list: if isSignedIn() && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+      allow create: if isValidId(orderId)
+        && isValidOrder(incoming())
+        && incoming().status == 'pending'
+        && incoming().createdAt == request.time
+        && (
+          (
+            incoming().items[0].storyId == 'custom-freeform' && (
+              (
+                exists(/databases/$(database)/documents/settings/storefront) &&
+                'customBookPrice' in get(/databases/$(database)/documents/settings/storefront).data &&
+                get(/databases/$(database)/documents/settings/storefront).data.customBookPrice == incoming().items[0].unitPrice
+              ) || (
+                (!exists(/databases/$(database)/documents/settings/storefront) ||
+                  !('customBookPrice' in get(/databases/$(database)/documents/settings/storefront).data)) &&
+                incoming().items[0].unitPrice == 69
+              )
+            )
+          ) || (
+            exists(/databases/$(database)/documents/stories/$(incoming().items[0].storyId)) &&
+            get(/databases/$(database)/documents/stories/$(incoming().items[0].storyId)).data.active == true &&
+            get(/databases/$(database)/documents/stories/$(incoming().items[0].storyId)).data.price == incoming().items[0].unitPrice
+          )
+        );
+      allow update: if isValidId(orderId)
+        && isAdmin()
+        && isValidOrder(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().orderNumber == existing().orderNumber
+        && incoming().diff(existing()).affectedKeys().hasOnly(['status'])
+        && existing().status != 'delivered'
+        && existing().status != 'cancelled';
+      allow delete: if isValidId(orderId) && isAdmin();
+    }
+
+    match /adminConfig/{configId} {
+      allow get: if isValidId(configId) && configId == 'security' && isAdmin();
+      allow list: if false;
+      allow create, update: if isValidId(configId)
+        && configId == 'security'
+        && isAdmin()
+        && isValidAdminSecurity(incoming())
+        && incoming().updatedAt == request.time;
+      allow delete: if false;
+    }
+
+    match /admins/{adminId} {
+      allow read, write: if false;
+    }
+  }
+}

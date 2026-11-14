@@ -1,0 +1,6 @@
+{
+  "name": "My Little Story",
+  "description": "Every Picture Has a Story. منصة تونسية متخصصة في بيع قصص الأطفال المطبوعة والمخصصة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

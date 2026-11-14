@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>محرر القصص المصوّرة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Tajawal:wght@400;700&family=Amiri:wght@400;700&family=Reem+Kufi&family=Lemonada:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+<style>
+:root{--bg:#faf6ef;--card:#fff;--ink:#2b2118;--mut:#7a6a58;--ac:#c4622d;--bd:#e5dccd;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1713;--card:#2a231c;--ink:#f3eadd;--mut:#b5a590;--bd:#40372d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1c1713;--card:#2a231c;--ink:#f3eadd;--mut:#b5a590;--bd:#40372d;color-scheme:dark}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Cairo,Tajawal,sans-serif}
+header{padding:12px 16px;border-bottom:1px solid var(--bd)}h1{font-size:19px;margin:0}h2{font-size:16px;margin:0 0 8px}
+main{max-width:1000px;margin:auto;padding:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+label{display:block;margin:8px 0;color:var(--mut);font-size:13px}
+input,select,textarea,button{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px;width:100%}
+input[type=color]{padding:2px;height:38px}input[type=range]{padding:0}input[type=checkbox]{width:auto}
+button{width:auto;cursor:pointer;margin:2px}button.pri{background:var(--ac);color:#fff;border-color:var(--ac)}
+.row{display:flex;gap:8px}.row>*{flex:1}.chk{display:flex;gap:8px;align-items:center}
+.tabs{display:flex;gap:4px;margin-bottom:10px}.tabs button{flex:1;margin:0}.tabs .on{background:var(--ac);color:#fff}
+#th{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px}#th button{min-width:44px;position:relative}#th .cu{background:var(--ac);color:#fff}#th .dn::after{content:"●";color:#3aa05a;font-size:9px;position:absolute;top:1px;right:3px}
+.g{display:grid;gap:12px}@media(min-width:760px){.g{grid-template-columns:380px 1fr}}
+#pv{width:min(100%,360px);margin:auto;box-shadow:0 4px 18px #0004;direction:ltr;background:#fff;touch-action:none}
+.pg{position:relative;overflow:hidden;background:#fff;container-type:size;width:100%;height:100%}
+.pg img{position:absolute;left:0;top:0;width:100%;height:100%}
+.tb{position:absolute;white-space:pre-wrap;direction:rtl;padding:2cqw;border-radius:2cqw;overflow-wrap:anywhere}
+#pv .tb{cursor:move;touch-action:none}
+#fbw{max-width:760px;margin:auto;direction:ltr}.page{background:#fff}
+.side{direction:ltr;display:flex;justify-content:center;align-items:center;background:#fff;border:1px solid var(--bd);width:100%;margin-bottom:6px;break-after:page}
+.side:last-child{break-after:auto}.slot{outline:1px dashed #bbb}.lb{font-size:13px;color:var(--mut);margin:8px 0 2px}
+.note{font-size:13px;color:var(--mut)}.warn{color:#c0392b;font-weight:700}
+@media print{.noprint{display:none!important}body{background:#fff}main{padding:0;max-width:none}.card{border:0;padding:0;margin:0}.side{border:0;margin:0;aspect-ratio:auto!important}.slot{outline:0}}
+</style></head><body>
+<style id="ps"></style>
+<header class="noprint"><h1>📖 محرر القصص المصوّرة</h1></header>
+<main>
+<section id="setup" class="card noprint">
+<h2>كتاب جديد</h2>
+<label>عنوان القصة<input id="s_t" placeholder="مثال: الأرنب الشجاع"></label>
+<label>المؤلف<input id="s_a"></label>
+<label>عدد صفحات المحتوى (بدون الغلافين)<input id="s_n" type="number" min="1" max="60" value="8"></label>
+<label>حجم الكتاب<select id="s_z"><option value="148,210">A5 عمودي</option><option value="210,297">A4 عمودي</option><option value="200,200">مربع 20×20</option><option value="210,148">A5 أفقي</option><option value="0,0">مخصص</option></select></label>
+<div class="row"><label>العرض (مم)<input id="s_w" type="number" value="148"></label><label>الارتفاع (مم)<input id="s_h" type="number" value="210"></label></div>
+<label class="chk"><input id="s_r" type="checkbox" checked> كتاب عربي (الكعب على اليمين، يُقلَّب من اليمين إلى اليسار)</label>
+<button class="pri" id="s_go">ابدأ</button><button id="s_old" hidden>متابعة المشروع السابق</button>
+</section>
+<section id="app" hidden>
+<div class="tabs noprint"><button data-t="edit" class="on">✏️ تحرير</button><button data-t="view">📖 معاينة</button><button data-t="print">🖨️ طباعة</button><button id="newb">جديد</button></div>
+<div id="t-edit" class="noprint">
+<div id="th"></div>
+<div class="g"><div><div id="pv"></div><p class="note" id="plab" style="text-align:center"></p></div>
+<div class="card">
+<label>الصورة<input type="file" id="up" accept="image/*"></label>
+<label>النص<textarea data-k="text" rows="4" placeholder="الصق نص هذه الصفحة هنا"></textarea></label>
+<div class="row"><label>الخط<select data-k="font"><option>Cairo</option><option>Tajawal</option><option>Amiri</option><option>Reem Kufi</option><option>Lemonada</option></select></label>
+<label>التخطيط<select data-k="layout"><option value="over">نص فوق الصورة</option><option value="split">صورة أعلى ونص أسفل</option></select></label></div>
+<div class="row"><label>حجم الخط<input type="range" data-k="size" min="2" max="14" step=".2"></label><label>عرض الصندوق<input type="range" data-k="w" min="20" max="100"></label></div>
+<div class="row"><label>لون النص<input type="color" data-k="color"></label><label>لون الخلفية<input type="color" data-k="bg"></label><label>شفافية<input type="range" data-k="a" min="0" max="1" step=".05"></label></div>
+<div class="row"><label>المحاذاة<select data-k="al"><option value="right">يمين</option><option value="center">وسط</option><option value="left">يسار</option></select></label>
+<label>ملاءمة الصورة<select data-k="fit"><option value="cover">ملء</option><option value="contain">احتواء</option></select></label>
+<label class="chk" style="margin-top:22px"><input type="checkbox" data-k="bold"> خط عريض</label></div>
+<div>الموضع: <button data-y="4">أعلى</button><button data-y="40">وسط</button><button data-y="72">أسفل</button> <span class="note">أو اسحب النص على الصورة</span></div>
+<button id="all" style="margin-top:8px">طبّق هذا التنسيق على كل الصفحات</button>
+</div></div></div>
+<div id="t-view" hidden class="noprint"><div id="fbw"></div>
+<div style="text-align:center;margin-top:8px"><button id="pn">‹ السابق</button><button id="nx">التالي ›</button></div></div>
+<div id="t-print" hidden>
+<div class="card noprint"><div class="row"><label>ورق الطباعة<select id="paper"><option value="297,210">A4 أفقي</option><option value="420,297">A3 أفقي</option><option value="279,216">Letter أفقي</option></select></label>
+<label>ما يُطبع<select id="mode"><option value="all">كل الأوجه (وجهان تلقائي)</option><option value="f">الأوجه الأمامية فقط</option><option value="b">الأوجه الخلفية فقط</option></select></label></div>
+<p class="warn" id="warn"></p>
+<p class="note">• تلقائي: اختر «كل الأوجه» ثم في إعدادات الطابعة: وجهان، <b>قلب على الحافة القصيرة</b>، مقياس 100%، بلا هوامش.<br>• يدوي: اطبع «الأمامية»، أعد الأوراق إلى الدرج مقلوبة حول الحافة القصيرة، ثم اطبع «الخلفية». جرّب أولًا بـ 4 صفحات.<br>• بعد الطباعة: ضع الأوراق فوق بعضها (الورقة 1 في الخارج)، اطوِها من المنتصف ودبّسها عند الطيّة.</p>
+<button class="pri" id="pr">🖨️ طباعة</button></div>
+<div id="pa"></div></div>
+</section></main>
+<script>
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+let B=null,cur=0,flip=null,tm;
+const np=()=>({img:'',text:'',x:6,y:70,w:88,size:5,color:'#ffffff',bg:'#000000',a:.45,al:'center',font:'Cairo',bold:1,fit:'cover',layout:'over'});
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const idb=()=>new Promise((r,j)=>{const q=indexedDB.open('story',1);q.onupgradeneeded=()=>q.result.createObjectStore('k');q.onsuccess=()=>r(q.result);q.onerror=j});
+function save(){clearTimeout(tm);tm=setTimeout(async()=>{try{(await idb()).transaction('k','readwrite').objectStore('k').put(B,'book')}catch(e){}},400)}
+async function load(){try{const d=await idb();return await new Promise(r=>{const q=d.transaction('k').objectStore('k').get('book');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)})}catch(e){return null}}
+function rp(p){
+ if(!p)return'<div class="pg"></div>';
+ const sp=p.layout==='split',rgb=[1,3,5].map(i=>parseInt(p.bg.substr(i,2),16)).join();
+ const im=p.img?`<img src="${p.img}" style="object-fit:${p.fit};${sp?'height:62%':''}">`:'';
+ const tb=p.text?`<div class="tb" style="left:${sp?4:p.x}%;top:${sp?64:p.y}%;width:${sp?92:p.w}%;font:${p.bold?700:400} ${p.size}cqw/1.5 '${p.font}',sans-serif;color:${p.color};text-align:${p.al};background:${sp?'none':`rgba(${rgb},${p.a})`}">${esc(p.text)}</div>`:'';
+ return`<div class="pg" style="background:${sp?p.bg:'#fff'}">${im}${tb}</div>`}
+function padded(){const a=[...B.pages],bk=a.pop();while((a.length+1)%4)a.push(null);a.push(bk);return a}
+function draw(){
+ const p=B.pages[cur];$('#pv').style.aspectRatio=B.w+'/'+B.h;$('#pv').innerHTML=rp(p);
+ $$('#th button').forEach((b,i)=>{b.className=(i==cur?'cu ':'')+(B.pages[i].img?'dn':'')});
+ $('#plab').textContent=cur==0?'الغلاف':cur==B.pages.length-1?'الغلاف الخلفي':'صفحة '+cur;save()}
+function sync(){const p=B.pages[cur];$$('[data-k]').forEach(e=>{const v=p[e.dataset.k];e.type==='checkbox'?e.checked=!!v:e.value=v})}
+function go(i){cur=i;sync();draw()}
+function open(){
+ $('#setup').hidden=true;$('#app').hidden=false;
+ $('#th').innerHTML=B.pages.map((p,i)=>`<button data-i="${i}">${i==0?'غ':i==B.pages.length-1?'خ':i}</button>`).join('');
+ $$('#th button').forEach(b=>b.onclick=()=>go(+b.dataset.i));tab('edit');go(0)}
+$('#s_z').onchange=e=>{const[w,h]=e.target.value.split(',');if(+w){$('#s_w').value=w;$('#s_h').value=h}};
+$('#s_go').onclick=()=>{
+ const n=Math.max(1,Math.min(60,+$('#s_n').value||8)),t=$('#s_t').value.trim()||'قصتي',a=$('#s_a').value.trim();
+ B={w:+$('#s_w').value||148,h:+$('#s_h').value||210,rtl:$('#s_r').checked,pages:Array.from({length:n+2},np)};
+ Object.assign(B.pages[0],{text:t+(a?'\n'+a:''),y:38,size:8,w:88});cur=0;open()};
+$('#s_old').onclick=async()=>{B=await load();if(B)open()};
+$('#newb').onclick=()=>{$('#app').hidden=true;$('#setup').hidden=false;$('#s_old').hidden=false};
+$$('[data-k]').forEach(el=>el.addEventListener('input',()=>{const p=B.pages[cur],k=el.dataset.k;p[k]=el.type==='range'?+el.value:el.type==='checkbox'?+el.checked:el.value;draw()}));
+$$('[data-y]').forEach(b=>b.onclick=()=>{const p=B.pages[cur];p.y=+b.dataset.y;p.x=(100-p.w)/2;draw()});
+$('#all').onclick=()=>{const c=B.pages[cur];B.pages.forEach(p=>['font','size','w','color','bg','a','al','fit','bold','layout'].forEach(k=>p[k]=c[k]));draw()};
+$('#up').onchange=e=>{
+ const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);B.pages[cur].img=c.toDataURL('image/jpeg',.85);draw();e.target.value=''};im.src=r.result};r.readAsDataURL(f)};
+let dg=null;
+$('#pv').addEventListener('pointerdown',e=>{const t=e.target.closest('.tb'),p=B.pages[cur];if(!t||p.layout==='split')return;dg={t,r:$('#pv').getBoundingClientRect(),sx:e.clientX,sy:e.clientY,x:p.x,y:p.y};t.setPointerCapture(e.pointerId)});
+addEventListener('pointermove',e=>{if(!dg)return;const p=B.pages[cur];p.x=Math.max(0,Math.min(100-p.w,dg.x+(e.clientX-dg.sx)/dg.r.width*100));p.y=Math.max(0,Math.min(92,dg.y+(e.clientY-dg.sy)/dg.r.height*100));dg.t.style.left=p.x+'%';dg.t.style.top=p.y+'%'});
+addEventListener('pointerup',()=>{if(dg){dg=null;save()}});
+function tab(n){
+ $$('.tabs [data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t==n));
+ ['edit','view','print'].forEach(t=>$('#t-'+t).hidden=t!=n);
+ if(n=='view')buildFlip();if(n=='print')buildPrint()}
+$$('.tabs [data-t]').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+function buildFlip(){
+ try{flip&&flip.destroy()}catch(e){}flip=null;$('#fbw').innerHTML='<div id="fb"></div>';
+ const P=padded(),el=$('#fb');let ix=P.map((p,i)=>i);if(B.rtl)ix.reverse();
+ ix.forEach((i,k)=>{const d=document.createElement('div');d.className='page';if(k==0||k==ix.length-1)d.dataset.density='hard';d.innerHTML=rp(P[i]);el.appendChild(d)});
+ flip=new St.PageFlip(el,{width:300,height:Math.round(300*B.h/B.w),size:'stretch',minWidth:140,maxWidth:600,minHeight:140,maxHeight:900,showCover:true,usePortrait:true,maxShadowOpacity:.5});
+ flip.loadFromHTML(el.querySelectorAll('.page'));if(B.rtl)flip.turnToPage(ix.length-1)}
+$('#nx').onclick=()=>flip&&(B.rtl?flip.flipPrev():flip.flipNext());
+$('#pn').onclick=()=>flip&&(B.rtl?flip.flipNext():flip.flipPrev());
+function buildPrint(){
+ const[PW,PH]=$('#paper').value.split(',').map(Number),md=$('#mode').value,P=padded(),N=P.length,w=B.w,h=B.h;let H='';
+ $('#warn').textContent=2*w<=PW&&h<=PH?'':'⚠ الصفحتان لا تتسعان في هذه الورقة: اختر ورقة أكبر أو حجم كتاب أصغر.';
+ $('#ps').textContent=`@page{size:${PW}mm ${PH}mm;margin:0}@media print{.side{width:${PW}mm;height:${PH}mm}}`;
+ const slot=i=>`<div class="slot" style="width:${w/PW*100}%;height:${h/PH*100}%">${rp(P[i])}</div>`;
+ for(let s=0;s<N/4;s++){
+  let f=[N-1-2*s,2*s],b=[2*s+1,N-2-2*s];if(B.rtl){f.reverse();b.reverse()}
+  [['f',f,'الوجه الأمامي'],['b',b,'الوجه الخلفي']].forEach(([k,pr,l])=>{if(md=='all'||md==k)H+=`<div class="lb noprint">ورقة ${s+1} — ${l}</div><div class="side" style="aspect-ratio:${PW}/${PH}">${slot(pr[0])}${slot(pr[1])}</div>`})}
+ $('#pa').innerHTML=H}
+$('#paper').onchange=$('#mode').onchange=buildPrint;
+$('#pr').onclick=()=>{buildPrint();print()};
+load().then(b=>{if(b)$('#s_old').hidden=false});
+</script></body></html>

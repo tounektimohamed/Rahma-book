@@ -1,0 +1,343 @@
+{
+  "entities": {
+    "Story": {
+      "title": "Story",
+      "description": "A personalized children's storybook product available for customization and print in Tunisia.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Primary story title (Arabic).",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "titleFr": {
+          "type": "string",
+          "description": "French localized story title.",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "titleEn": {
+          "type": "string",
+          "description": "English localized story title.",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "slug": {
+          "type": "string",
+          "description": "URL-friendly slug identifier.",
+          "minLength": 2,
+          "maxLength": 120,
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed Arabic story description.",
+          "minLength": 10,
+          "maxLength": 2000
+        },
+        "descriptionFr": {
+          "type": "string",
+          "description": "Detailed French story description.",
+          "minLength": 10,
+          "maxLength": 2000
+        },
+        "descriptionEn": {
+          "type": "string",
+          "description": "Detailed English story description.",
+          "minLength": 10,
+          "maxLength": 2000
+        },
+        "category": {
+          "type": "string",
+          "description": "Story category label.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "categoryFr": {
+          "type": "string",
+          "description": "French category label.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "categoryEn": {
+          "type": "string",
+          "description": "English category label.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "coverImage": {
+          "type": "string",
+          "description": "Asset path, HTTPS URL, or compressed JPEG Base64 data URL for story cover artwork.",
+          "minLength": 5,
+          "maxLength": 220000
+        },
+        "gallery": {
+          "type": "array",
+          "description": "Sample interior spread images."
+        },
+        "price": {
+          "type": "number",
+          "description": "Unit price in TND."
+        },
+        "pages": {
+          "type": "number",
+          "description": "Number of printed pages."
+        },
+        "format": {
+          "type": "string",
+          "description": "Book physical dimensions.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "paperType": {
+          "type": "string",
+          "description": "Archival paper specification.",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "bindingType": {
+          "type": "string",
+          "description": "Hardcover or softcover binding method.",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "ageRange": {
+          "type": "string",
+          "description": "Recommended child age range.",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "prepTime": {
+          "type": "string",
+          "description": "Estimated printing and preparation lead time.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "language": {
+          "type": "array",
+          "description": "Supported story print languages."
+        },
+        "featured": {
+          "type": "boolean",
+          "description": "Whether the story appears on the homepage featured section."
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Whether the story is active in the catalog."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        }
+      },
+      "required": [
+        "title",
+        "slug",
+        "description",
+        "category",
+        "coverImage",
+        "gallery",
+        "price",
+        "pages",
+        "format",
+        "paperType",
+        "bindingType",
+        "ageRange",
+        "language",
+        "active",
+        "createdAt"
+      ]
+    },
+    "StorefrontSettings": {
+      "title": "StorefrontSettings",
+      "description": "Admin-editable homepage interface content including hero copy, hero banner image, and section headings.",
+      "type": "object",
+      "properties": {
+        "heroHighlightAr": { "type": "string", "maxLength": 160 },
+        "heroHighlightFr": { "type": "string", "maxLength": 160 },
+        "heroHighlightEn": { "type": "string", "maxLength": 160 },
+        "heroTitleAr": { "type": "string", "maxLength": 200 },
+        "heroTitleFr": { "type": "string", "maxLength": 200 },
+        "heroTitleEn": { "type": "string", "maxLength": 200 },
+        "heroSubtitleAr": { "type": "string", "maxLength": 600 },
+        "heroSubtitleFr": { "type": "string", "maxLength": 600 },
+        "heroSubtitleEn": { "type": "string", "maxLength": 600 },
+        "heroCtaPrimaryAr": { "type": "string", "maxLength": 80 },
+        "heroCtaPrimaryFr": { "type": "string", "maxLength": 80 },
+        "heroCtaPrimaryEn": { "type": "string", "maxLength": 80 },
+        "heroCtaSecondaryAr": { "type": "string", "maxLength": 80 },
+        "heroCtaSecondaryFr": { "type": "string", "maxLength": 80 },
+        "heroCtaSecondaryEn": { "type": "string", "maxLength": 80 },
+        "heroImage": { "type": "string", "maxLength": 220000 },
+        "featuredTitleAr": { "type": "string", "maxLength": 160 },
+        "featuredTitleFr": { "type": "string", "maxLength": 160 },
+        "featuredTitleEn": { "type": "string", "maxLength": 160 },
+        "featuredSubtitleAr": { "type": "string", "maxLength": 400 },
+        "featuredSubtitleFr": { "type": "string", "maxLength": 400 },
+        "featuredSubtitleEn": { "type": "string", "maxLength": 400 },
+        "domainsTitleAr": { "type": "string", "maxLength": 180 },
+        "domainsTitleFr": { "type": "string", "maxLength": 180 },
+        "domainsTitleEn": { "type": "string", "maxLength": 180 },
+        "domainsSubtitleAr": { "type": "string", "maxLength": 400 },
+        "domainsSubtitleFr": { "type": "string", "maxLength": 400 },
+        "domainsSubtitleEn": { "type": "string", "maxLength": 400 },
+        "customBookPrice": { "type": "number" },
+        "contactPhone": { "type": "string", "maxLength": 40 },
+        "contactEmail": { "type": "string", "maxLength": 160 },
+        "contactLocation": { "type": "string", "maxLength": 160 },
+        "instagramUrl": { "type": "string", "maxLength": 240 },
+        "facebookUrl": { "type": "string", "maxLength": 240 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["heroTitleAr", "heroSubtitleAr", "heroImage", "updatedAt"]
+    },
+    "StoryDomain": {
+      "title": "StoryDomain",
+      "description": "Expanded story genre or type editable from Admin Dashboard.",
+      "type": "object",
+      "properties": {
+        "labelAr": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "labelFr": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "labelEn": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "summaryAr": { "type": "string", "minLength": 2, "maxLength": 280 },
+        "summaryFr": { "type": "string", "minLength": 2, "maxLength": 280 },
+        "summaryEn": { "type": "string", "minLength": 2, "maxLength": 280 },
+        "subtopicsAr": { "type": "array" },
+        "subtopicsFr": { "type": "array" },
+        "subtopicsEn": { "type": "array" },
+        "recommendedStoryId": { "type": "string", "maxLength": 128 },
+        "coverPreview": { "type": "string", "maxLength": 220000 },
+        "sortOrder": { "type": "number" },
+        "active": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["labelAr", "summaryAr", "recommendedStoryId", "coverPreview", "active", "updatedAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "A customer Cash-on-Delivery order with personalized storybook items.",
+      "type": "object",
+      "properties": {
+        "orderNumber": {
+          "type": "string",
+          "description": "Unique human-readable order identifier.",
+          "minLength": 10,
+          "maxLength": 32,
+          "pattern": "^MLS-[0-9]{6}-[A-Z0-9]{4}$"
+        },
+        "customer": {
+          "type": "object",
+          "description": "Tunisian delivery contact and address details."
+        },
+        "items": {
+          "type": "array",
+          "description": "Customized book items included in the order, including optional storyDomain (<=120) and storyIdea (<=1200) fields."
+        },
+        "subtotal": {
+          "type": "number",
+          "description": "Verified sum of item prices in TND."
+        },
+        "deliveryFee": {
+          "type": "number",
+          "description": "Calculated delivery fee in TND."
+        },
+        "total": {
+          "type": "number",
+          "description": "Total Cash-on-Delivery amount in TND."
+        },
+        "paymentMethod": {
+          "type": "string",
+          "enum": ["COD"],
+          "description": "Payment method (Cash on Delivery)."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "printing", "shipped", "delivered", "cancelled"],
+          "description": "Current fulfillment status."
+        },
+        "confirmedAccurate": {
+          "type": "boolean",
+          "description": "Customer confirmation that personalization and shipping details are accurate."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Optional authenticated user UID when customer is signed in.",
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server order creation timestamp."
+        }
+      },
+      "required": [
+        "orderNumber",
+        "customer",
+        "items",
+        "subtotal",
+        "deliveryFee",
+        "total",
+        "paymentMethod",
+        "status",
+        "confirmedAccurate",
+        "createdAt"
+      ]
+    },
+    "AdminSecurity": {
+      "title": "AdminSecurity",
+      "description": "Single-administrator (tounekti17@gmail.com) Firestore-defined secondary password configuration.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 200
+        },
+        "passwordHash": {
+          "type": "string",
+          "minLength": 32,
+          "maxLength": 256
+        },
+        "salt": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 128
+        },
+        "password": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 128
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["email", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/stories/{storyId}": {
+      "schema": { "$ref": "#/entities/Story" },
+      "description": "Publicly readable active storybooks catalog, managed exclusively by the single admin."
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/StorefrontSettings" },
+      "description": "Storefront appearance, contact info, and copy settings editable by the single admin."
+    },
+    "/storyDomains/{domainId}": {
+      "schema": { "$ref": "#/entities/StoryDomain" },
+      "description": "Story genres/types stored in Firestore and editable by the single admin."
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Customer orders containing PII and compressed child photos; strictly non-public reads and schema-enforced creation."
+    },
+    "/adminConfig/{configId}": {
+      "schema": { "$ref": "#/entities/AdminSecurity" },
+      "description": "Single-admin security config storing the Firestore-defined admin password for tounekti17@gmail.com."
+    }
+  }
+}

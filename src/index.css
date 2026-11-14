@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --mls-primary: #F5B8B8;
+    --mls-secondary: #F8E8DC;
+    --mls-cream: #FFF9F2;
+    --mls-lavender: #DCD6F7;
+    --mls-sage: #B8CDBA;
+    --mls-text: #443B3B;
+    --mls-text-muted: #706464;
+    --mls-border: #EADFD7;
+  }
+
+  html {
+    background-color: #FFF9F2;
+    color: #443B3B;
+    scroll-behavior: smooth;
+  }
+
+  html[dir="rtl"] body {
+    font-family: 'Cairo', 'Poppins', system-ui, sans-serif;
+  }
+
+  html[dir="ltr"] body {
+    font-family: 'Poppins', 'Cairo', system-ui, sans-serif;
+  }
+
+  button,
+  a,
+  select,
+  input,
+  textarea {
+    font-family: inherit;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
